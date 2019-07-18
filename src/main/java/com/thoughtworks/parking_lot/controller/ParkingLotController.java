@@ -3,6 +3,7 @@ package com.thoughtworks.parking_lot.controller;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParingLotRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,5 +54,21 @@ public class ParkingLotController {
       return ResponseEntity.ok(pageContent.getContent());
     }
     return ResponseEntity.ok(paringLotRepository.findAll());
+  }
+
+  @RequestMapping(value = "/parking-lots/{id}", method = RequestMethod.GET)
+  public ResponseEntity getParkingLotById(
+      @PathVariable Integer id) {
+    return ResponseEntity.ok(paringLotRepository.findById(id));
+  }
+
+  @PutMapping(value = "/parking-lots/{id}")
+  public ResponseEntity modifyParkingLot(@PathVariable Integer id,
+      @RequestBody ParkingLot parkingLot) {
+    if (id != null) {
+      return ResponseEntity.ok(paringLotRepository.save(parkingLot));
+    } else {
+      return (ResponseEntity) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+    }
   }
 }
