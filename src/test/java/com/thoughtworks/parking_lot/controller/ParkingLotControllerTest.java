@@ -1,8 +1,12 @@
 package com.thoughtworks.parking_lot.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParingLotRepository;
@@ -17,10 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)//测试引擎
@@ -105,6 +113,27 @@ public class ParkingLotControllerTest {
       System.out.println("result:"+e.getMessage());
       Assert.assertEquals("Request processing failed; nested exception is java.lang.RuntimeException: test success",e.getMessage());
     }
+  }
 
+  @Test
+  public void should_return_parkingLots_when_call_get_parkingLots_api_with_page_and_pageSize()
+      throws Exception {
+    List<ParkingLot> parkingLots = new ArrayList<>();
+    for(int i=1;i<=15;i++){
+      parkingLots.add(new ParkingLot(i,"park"+i,200,"location"+i));
+    }
+    PageImpl<ParkingLot> parkingLotPage =new PageImpl<ParkingLot>(parkingLots);
+    Mockito.when(
+        paringLotRepository.findAll(
+            (Pageable) Mockito.any()
+        )
+    ).thenReturn(parkingLotPage)
+    ;
+    mockMvc.perform(get("/parking-lots?page=1&pageSize=15"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.[0].name").value("park1"));
+
+    //Assert.assertEquals("park1",parkingLotPage.getContent().get(0).getName());
   }
 }
