@@ -42,5 +42,15 @@ public class ParkingLotController {
 
   }
 
-
+  @RequestMapping(value = "/parking-lots", method = RequestMethod.GET)
+  public ResponseEntity<List<ParkingLot>> getAllParkingLotByPageAndPageSize(
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "15") Integer pageSize) {
+    if (page > 0 && pageSize > 0) {
+      Page<ParkingLot> pageContent = paringLotRepository.findAll(PageRequest
+          .of(page - 1, pageSize));
+      return ResponseEntity.ok(pageContent.getContent());
+    }
+    return ResponseEntity.ok(paringLotRepository.findAll());
+  }
 }
