@@ -1,17 +1,13 @@
 package com.thoughtworks.parking_lot.controller;
 
-import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.thoughtworks.parking_lot.entity.ParkingLot;
-import com.thoughtworks.parking_lot.repository.ParingLoyRepository;
+import com.thoughtworks.parking_lot.repository.ParingLotRepository;
 import java.util.ArrayList;
 import java.util.List;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)//测试引擎
 @SpringBootTest
@@ -32,7 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 public class ParkingLotControllerTest {
 
   @MockBean
-  private ParingLoyRepository paringLoyRepository;
+  private ParingLotRepository paringLotRepository;
 
   @Autowired
   private MockMvc mockMvc;
@@ -44,7 +41,7 @@ public class ParkingLotControllerTest {
       add(new ParkingLot("parkinglot2", 100, "gongbei"));
       add(new ParkingLot("parkinglot3", 100, "jingding"));
     }};
-    paringLoyRepository.saveAll(parkingLots);
+    paringLotRepository.saveAll(parkingLots);
   }
 
   @Test
@@ -52,7 +49,7 @@ public class ParkingLotControllerTest {
       throws Exception {
     ParkingLot parkingLotResult = null;
     Mockito.when(
-        paringLoyRepository.save(
+        paringLotRepository.save(
             Mockito.any()
         )
     ).thenReturn(new ParkingLot(1, "p1", 2000, "zhuhai"));
@@ -75,12 +72,12 @@ public class ParkingLotControllerTest {
       throws Exception {
     ParkingLot parkingLotResult = null;
     Mockito.when(
-        paringLoyRepository.save(
+        paringLotRepository.save(
             Mockito.any()
         )
     ).thenThrow(new RuntimeException("name is existing"));
     try {
-     mockMvc.perform(post("/parking-lots")
+      mockMvc.perform(post("/parking-lots")
           .contentType(MediaType.APPLICATION_JSON_UTF8)
           .content("{\n"
               + "\t\"name\":\"p1\",\n"
@@ -88,11 +85,25 @@ public class ParkingLotControllerTest {
               + "\t\"location\":\"zhuhai\"\n"
               + "}")
       ).andReturn();
-    }catch (Exception e){
-      System.out.println("result:"+e.getMessage());
+    } catch (Exception e) {
+      System.out.println("result:" + e.getMessage());
       Assert.assertEquals("Request processing failed; "
           + "nested exception is java.lang.RuntimeException"
-          + ": name is existing",e.getMessage());
+          + ": name is existing", e.getMessage());
+    }
+
+  }
+
+  @Test
+  public void should_return_HttpStatus_OK_when_call_delete_parkingLot_api_with_id()
+      throws Exception {
+    Mockito.doThrow(new RuntimeException("test success")).doNothing().when(paringLotRepository).deleteById(1);
+    try {
+      mockMvc.perform(delete("/parking-lots/{id}",1))
+          .andReturn();
+    }catch (Exception e){
+      System.out.println("result:"+e.getMessage());
+      Assert.assertEquals("Request processing failed; nested exception is java.lang.RuntimeException: test success",e.getMessage());
     }
 
   }
