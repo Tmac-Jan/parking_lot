@@ -53,4 +53,10 @@ public class ParkingLotController {
     }
     return ResponseEntity.ok(paringLotRepository.findAll());
   }
+
+  @RequestMapping(value = "/parking-lots/{id}", method = RequestMethod.GET)
+  public ResponseEntity getParkingLotById(
+      @PathVariable Integer id) {
+    return ResponseEntity.ok(paringLotRepository.findById(id));
+  }
 }

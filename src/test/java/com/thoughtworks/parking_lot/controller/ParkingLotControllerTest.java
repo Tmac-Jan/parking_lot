@@ -133,7 +133,21 @@ public class ParkingLotControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.[0].name").value("park1"));
+    
+  }
+  @Test
+  public void should_return_parkingLot_when_call_get_parkingLots_api_by_id()
+      throws Exception {
+    Mockito.when(
+        paringLotRepository.findById(
+            Mockito.any()
+        )
+    ).thenReturn(java.util.Optional.of(new ParkingLot(1, "parkinglot1", 1000, "zhuhai")));
 
-    //Assert.assertEquals("park1",parkingLotPage.getContent().get(0).getName());
+    mockMvc.perform(get("/parking-lots/1"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value("1"));
+
   }
 }
