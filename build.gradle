@@ -16,6 +16,7 @@ repositories {
 dependencies {
     compile group: 'com.h2database', name: 'h2'
     compile "org.flywaydb:flyway-core:5.2.4"
+    compile group:'com.fasterxml.jackson.core',name:'jackson-databind'
     runtime group: 'org.flywaydb', name: 'flyway-gradle-plugin', version: '5.2.4'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -1,13 +1,15 @@
 package com.thoughtworks.parking_lot.controller;
 
+import static com.jayway.jsonpath.internal.function.ParamType.JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParingLotRepository;
 import java.util.ArrayList;
@@ -21,15 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)//测试引擎
 @SpringBootTest
@@ -105,13 +104,16 @@ public class ParkingLotControllerTest {
   @Test
   public void should_return_HttpStatus_OK_when_call_delete_parkingLot_api_with_id()
       throws Exception {
-    Mockito.doThrow(new RuntimeException("test success")).doNothing().when(paringLotRepository).deleteById(1);
+    Mockito.doThrow(new RuntimeException("test success")).doNothing().when(paringLotRepository)
+        .deleteById(1);
     try {
-      mockMvc.perform(delete("/parking-lots/{id}",1))
+      mockMvc.perform(delete("/parking-lots/{id}", 1))
           .andReturn();
-    }catch (Exception e){
-      System.out.println("result:"+e.getMessage());
-      Assert.assertEquals("Request processing failed; nested exception is java.lang.RuntimeException: test success",e.getMessage());
+    } catch (Exception e) {
+      System.out.println("result:" + e.getMessage());
+      Assert.assertEquals(
+          "Request processing failed; nested exception is java.lang.RuntimeException: test success",
+          e.getMessage());
     }
   }
 
@@ -119,10 +121,10 @@ public class ParkingLotControllerTest {
   public void should_return_parkingLots_when_call_get_parkingLots_api_with_page_and_pageSize()
       throws Exception {
     List<ParkingLot> parkingLots = new ArrayList<>();
-    for(int i=1;i<=15;i++){
-      parkingLots.add(new ParkingLot(i,"park"+i,200,"location"+i));
+    for (int i = 1; i <= 15; i++) {
+      parkingLots.add(new ParkingLot(i, "park" + i, 200, "location" + i));
     }
-    PageImpl<ParkingLot> parkingLotPage =new PageImpl<ParkingLot>(parkingLots);
+    PageImpl<ParkingLot> parkingLotPage = new PageImpl<ParkingLot>(parkingLots);
     Mockito.when(
         paringLotRepository.findAll(
             (Pageable) Mockito.any()
@@ -133,8 +135,9 @@ public class ParkingLotControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.[0].name").value("park1"));
-    
+
   }
+
   @Test
   public void should_return_parkingLot_when_call_get_parkingLots_api_by_id()
       throws Exception {
@@ -148,6 +151,24 @@ public class ParkingLotControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value("1"));
+  }
 
+  @Test
+  public void should_return_parkingLot_when_call_modify_parkingLots_api_by_id()
+      throws Exception {
+    Mockito.when(
+        paringLotRepository.save(
+            Mockito.any(ParkingLot.class)
+        )
+    ).thenReturn(new ParkingLot(1, "parkinglot1", 2000, "zhuhai"));
+
+    ParkingLot parkingLot = new ParkingLot(1, "parkinglot1", 2000, "zhuhai");
+    ObjectMapper MAPPER = new ObjectMapper();
+    mockMvc.perform(put("/parking-lots/{id}", 1)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(MAPPER.writeValueAsString(parkingLot)))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value("1"));
   }
 }
