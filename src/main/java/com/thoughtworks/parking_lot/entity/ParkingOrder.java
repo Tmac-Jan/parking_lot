@@ -29,7 +29,7 @@ public class ParkingOrder {
 
     private String status;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private ParkingLot parkingLot;
 
     public ParkingOrder(String parkingLotName, String carNumber) {
@@ -48,7 +48,14 @@ public class ParkingOrder {
         this.status = status;
         this.parkingLot = parkingLot;
     }
-
+    public ParkingOrder(Integer id,String parkingLotName, String carNumber, Date createTime, Date updateTime, String status) {
+        this.id=id;
+        this.parkingLotName = parkingLotName;
+        this.carNumber = carNumber;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.status = status;
+    }
     public String getStatus() {
         return status;
     }
