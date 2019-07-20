@@ -29,9 +29,37 @@ public class ParkingOrder {
 
     private Date updateTime;//订单结束时间
 
+    private String status;
+
     public ParkingOrder(String parkingLotName, String carNumber) {
         this.parkingLotName = parkingLotName;
         this.carNumber = carNumber;
+    }
+    public ParkingOrder(){
+
+    }
+    public ParkingOrder(Integer id,String parkingLotName, String carNumber, Date createTime, Date updateTime, String status) {
+       this.id=id;
+        this.parkingLotName = parkingLotName;
+        this.carNumber = carNumber;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.status = status;
+    }
+    public ParkingOrder(String parkingLotName, String carNumber, Date createTime, Date updateTime, String status) {
+        this.parkingLotName = parkingLotName;
+        this.carNumber = carNumber;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Integer getId() {
