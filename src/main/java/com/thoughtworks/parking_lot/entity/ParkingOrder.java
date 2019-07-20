@@ -2,9 +2,7 @@ package com.thoughtworks.parking_lot.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -31,6 +29,9 @@ public class ParkingOrder {
 
     private String status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ParkingLot parkingLot;
+
     public ParkingOrder(String parkingLotName, String carNumber) {
         this.parkingLotName = parkingLotName;
         this.carNumber = carNumber;
@@ -38,20 +39,14 @@ public class ParkingOrder {
     public ParkingOrder(){
 
     }
-    public ParkingOrder(Integer id,String parkingLotName, String carNumber, Date createTime, Date updateTime, String status) {
-       this.id=id;
+    public ParkingOrder(Integer id,String parkingLotName, String carNumber, Date createTime, Date updateTime, String status,ParkingLot parkingLot) {
+        this.id=id;
         this.parkingLotName = parkingLotName;
         this.carNumber = carNumber;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.status = status;
-    }
-    public ParkingOrder(String parkingLotName, String carNumber, Date createTime, Date updateTime, String status) {
-        this.parkingLotName = parkingLotName;
-        this.carNumber = carNumber;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.status = status;
+        this.parkingLot = parkingLot;
     }
 
     public String getStatus() {
@@ -100,5 +95,13 @@ public class ParkingOrder {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
     }
 }

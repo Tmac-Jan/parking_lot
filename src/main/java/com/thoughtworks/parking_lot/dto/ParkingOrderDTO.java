@@ -26,6 +26,25 @@ public class ParkingOrderDTO {
 
     private Integer parkingLotId;
 
+    public ParkingOrderDTO(Integer id, String parkingLotName, String carNumber, Date createTime, Date updateTime, String status, Integer parkingLotId) {
+        this.id = id;
+        this.parkingLotName = parkingLotName;
+        this.carNumber = carNumber;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.status = status;
+        this.parkingLotId = parkingLotId;
+    }
+
+    public ParkingOrderDTO(String parkingLotName, String carNumber, Date createTime, Date updateTime, String status, Integer parkingLotId) {
+        this.parkingLotName = parkingLotName;
+        this.carNumber = carNumber;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.status = status;
+        this.parkingLotId = parkingLotId;
+    }
+
     public Integer getParkingLotId() {
         return parkingLotId;
     }

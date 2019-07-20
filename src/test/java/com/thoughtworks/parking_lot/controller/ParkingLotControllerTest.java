@@ -1,6 +1,5 @@
 package com.thoughtworks.parking_lot.controller;
 
-import static com.jayway.jsonpath.internal.function.ParamType.JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
-import com.thoughtworks.parking_lot.repository.ParingLotRepository;
+import com.thoughtworks.parking_lot.repository.ParkingLotRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -36,7 +35,7 @@ import org.springframework.test.web.servlet.MvcResult;
 public class ParkingLotControllerTest {
 
   @MockBean
-  private ParingLotRepository paringLotRepository;
+  private ParkingLotRepository parkingLotRepository;
 
   @Autowired
   private MockMvc mockMvc;
@@ -48,15 +47,14 @@ public class ParkingLotControllerTest {
       add(new ParkingLot("parkinglot2", 100, "gongbei"));
       add(new ParkingLot("parkinglot3", 100, "jingding"));
     }};
-    paringLotRepository.saveAll(parkingLots);
+    parkingLotRepository.saveAll(parkingLots);
   }
 
   @Test
   public void should_return_parkingLot_when_call_create_parkingLot_api_with_correct_params()
       throws Exception {
-    ParkingLot parkingLotResult = null;
     Mockito.when(
-        paringLotRepository.save(
+        parkingLotRepository.save(
             Mockito.any()
         )
     ).thenReturn(new ParkingLot(1, "p1", 2000, "zhuhai"));
@@ -79,7 +77,7 @@ public class ParkingLotControllerTest {
       throws Exception {
     ParkingLot parkingLotResult = null;
     Mockito.when(
-        paringLotRepository.save(
+        parkingLotRepository.save(
             Mockito.any()
         )
     ).thenThrow(new RuntimeException("name is existing"));
@@ -104,7 +102,7 @@ public class ParkingLotControllerTest {
   @Test
   public void should_return_HttpStatus_OK_when_call_delete_parkingLot_api_with_id()
       throws Exception {
-    Mockito.doThrow(new RuntimeException("test success")).doNothing().when(paringLotRepository)
+    Mockito.doThrow(new RuntimeException("test success")).doNothing().when(parkingLotRepository)
         .deleteById(1);
     try {
       mockMvc.perform(delete("/parking-lots/{id}", 1))
@@ -126,7 +124,7 @@ public class ParkingLotControllerTest {
     }
     PageImpl<ParkingLot> parkingLotPage = new PageImpl<ParkingLot>(parkingLots);
     Mockito.when(
-        paringLotRepository.findAll(
+        parkingLotRepository.findAll(
             (Pageable) Mockito.any()
         )
     ).thenReturn(parkingLotPage)
@@ -142,7 +140,7 @@ public class ParkingLotControllerTest {
   public void should_return_parkingLot_when_call_get_parkingLots_api_by_id()
       throws Exception {
     Mockito.when(
-        paringLotRepository.findById(
+        parkingLotRepository.findById(
             Mockito.any()
         )
     ).thenReturn(java.util.Optional.of(new ParkingLot(1, "parkinglot1", 1000, "zhuhai")));
@@ -157,7 +155,7 @@ public class ParkingLotControllerTest {
   public void should_return_parkingLot_when_call_modify_parkingLots_api_by_id()
       throws Exception {
     Mockito.when(
-        paringLotRepository.save(
+        parkingLotRepository.save(
             Mockito.any(ParkingLot.class)
         )
     ).thenReturn(new ParkingLot(1, "parkinglot1", 2000, "zhuhai"));

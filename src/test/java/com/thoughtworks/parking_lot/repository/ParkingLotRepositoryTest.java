@@ -10,10 +10,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DataJpaTest
-public class ParingLotRepositoryTest {
+public class ParkingLotRepositoryTest {
 
   @Autowired
-  private ParingLotRepository paringLoyRepository;
+  private ParkingLotRepository paringLoyRepository;
 
   @Before
   public void setUp(){
