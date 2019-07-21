@@ -23,8 +23,7 @@ import java.util.Date;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @title: ParkingOrderControllerTest
@@ -53,48 +52,40 @@ public class ParkingOrderControllerTest {
         parkingLotRepository.save(parkingLot);
 
     }
-//    @Test
-//    public void should_return_parkingOrder_when_call_create_parkingOrder_API() throws Exception {
-//        ObjectMapper MAPPER = new ObjectMapper();
-//        ParkingOrderDTO parkingOrderDTOActual = new ParkingOrderDTO("gongbeiParkingLot"
-//                ,"FN-001",new Date(),new Date(),"cteate",1);
-//        ParkingOrder ParkingOrderExpected = new ParkingOrder(1,
-//                "gongbeiParkingLot",
-//                "FN-001",
-//                new Date(),
-//                new Date(),
-//                "create",
-//                new ParkingLot(1,"gongbeiParkingLot",200,"gongbei")
-//        );
+    @Test
+    public void should_return_parkingOrder_when_call_create_parkingOrder_API_and_id_is_null() throws Exception {
+        ObjectMapper MAPPER = new ObjectMapper();
+        ParkingOrder parkingOrder = mock(ParkingOrder.class);
+        ParkingOrderDTO parkingOrderDTOActual = new ParkingOrderDTO("gongbeiParkingLot"
+                ,"FN-001",new Date(),new Date(),"cteate",1);
+        Mockito.when(
+                parkingOrderSevice.createParkingOrder(
+                        (ParkingOrderDTO)Mockito.any()
+                )
+        ).thenReturn(parkingOrder);
+        mockMvc.perform(post("/parking-orders")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(MAPPER.writeValueAsString(parkingOrderDTOActual)
+                ))
+                .andExpect(status().isOk());
+               // .andExpect(jsonPath("$.id").value("1"));
+    }
+    @Test
+    public void should_return_bad_request_status_code_when_call_create_parkingOrder_API_with_not_null_id() throws Exception {
+        ObjectMapper MAPPER = new ObjectMapper();
+        ParkingOrderDTO parkingOrderDTOActual = new ParkingOrderDTO(1,"gongbeiParkingLot"
+                ,"FN-001",new Date(),new Date(),"cteate",1);
 //        Mockito.when(
-//                parkingOrderRepository.save(
-//                        Mockito.any()
-//                )
-//        ).thenReturn(ParkingOrderExpected);
-//        mockMvc.perform(post("/parking-orders")
-//                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .content(MAPPER.writeValueAsString(parkingOrderDTOActual)
-//                ))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value("1"));
-//    }
-//    @Test
-//    public void should_return_bad_request_status_code_when_call_create_parkingOrder_API_and_the_parkingLot_capacity_smaller_than_1() throws Exception {
-//        ObjectMapper MAPPER = new ObjectMapper();
-//        ParkingOrderDTO parkingOrderDTOActual = new ParkingOrderDTO("gongbeiParkingLot"
-//                ,"FN-001",new Date(),new Date(),"cteate",1);
-//
-//        Mockito.when(
-//              parkingLotRepository.findById(
-//                      Mockito.anyInt()
+//              parkingOrderSevice.createParkingOrder(
+//                      (ParkingOrderDTO)Mockito.any()
 //              )
-//        ).thenReturn(java.util.Optional.of(new ParkingLot(1,"gongbeiParkingLot",0,"gongbei")));
-//        mockMvc.perform(post("/parking-orders")
-//                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .content(MAPPER.writeValueAsString(parkingOrderDTOActual)
-//                ))
-//                .andExpect(status().isBadRequest());
-//    }
+//        ).thenReturn(null);
+        mockMvc.perform(post("/parking-orders")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(MAPPER.writeValueAsString(parkingOrderDTOActual)
+                ))
+                .andExpect(status().isBadRequest());
+    }
     @Test
     public void should_return_badRequest_status_when_call_finish_parkingOrder_API_with_wrong_id() throws Exception {
         Mockito.when(
@@ -104,6 +95,23 @@ public class ParkingOrderControllerTest {
         ).thenReturn(null);
         mockMvc.perform(put("/parking-orders/{id}",100)
         ).andExpect(status().isBadRequest());
+    }
+    @Test
+    public void should_return_error_message_status_code_when_call_create_parkingOrder_API_with_not_null_id() throws Exception {
+        ObjectMapper MAPPER = new ObjectMapper();
+        ParkingOrderDTO parkingOrderDTOActual = new ParkingOrderDTO(1,"gongbeiParkingLot"
+                ,"FN-001",new Date(),new Date(),"cteate",1);
+//        Mockito.when(
+//              parkingOrderSevice.createParkingOrder(
+//                      (ParkingOrderDTO)Mockito.any()
+//              )
+//        ).thenReturn(null);
+        mockMvc.perform(post("/parking-orders")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(MAPPER.writeValueAsString(parkingOrderDTOActual)
+                ))
+                .andExpect(status().isOk())
+                .andExpect(content().string("The parkingLot is full"));
     }
     @Test
     public void should_return_ok_status_when_call_finish_parkingOrder_API_with_true_id() throws Exception {
