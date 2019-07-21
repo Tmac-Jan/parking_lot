@@ -26,6 +26,7 @@ public class ParkingOrderDTO {
 
     private Integer parkingLotId;
 
+    public ParkingOrderDTO(){}
     public ParkingOrderDTO(Integer id, String parkingLotName, String carNumber, Date createTime, Date updateTime, String status, Integer parkingLotId) {
         this.id = id;
         this.parkingLotName = parkingLotName;
