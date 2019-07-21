@@ -32,17 +32,16 @@ public class ParkingOrderController {
     private ParkingOrderSevice parkingOrderSevice;
     @PostMapping(value = "/parking-orders")
     public ResponseEntity createParkingOrder(@RequestBody ParkingOrderDTO parkingOrderDTO){
-        if (parkingOrderDTO.getId()==null){
-            ParkingOrder parkingOrder = new ParkingOrder();
-            BeanUtils.copyProperties(parkingOrderDTO,parkingOrder);
-            Optional<ParkingLot> parkingLot =parkingLotRepository.findById(parkingOrderDTO.getParkingLotId());
-            if (parkingLot.get()!=null&&parkingLot.get().getCapacity()>0){
-                parkingLot.get().setCapacity(parkingLot.get().getCapacity()-1);
-                return ResponseEntity.ok(parkingOrderRepository.save(parkingOrder));
-            }else
-            return (ResponseEntity) ResponseEntity.status(HttpStatus.BAD_REQUEST);
-        }else
-        return (ResponseEntity) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+     if (parkingOrderDTO.getId()==null){
+         ParkingOrder parkingOrder = parkingOrderSevice.createParkingOrder(parkingOrderDTO);
+         if (parkingOrder!=null){
+             return  ResponseEntity.ok(parkingOrder);
+         }else{
+             return ResponseEntity.ok("The parkingLot is full");
+         }
+     }else{
+         return (ResponseEntity) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+     }
     }
     @PutMapping(value = "/parking-orders/{id}")
     public ResponseEntity finishParkingOrder(@PathVariable Integer id){

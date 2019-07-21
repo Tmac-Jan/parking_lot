@@ -12,5 +12,6 @@ import com.thoughtworks.parking_lot.entity.ParkingOrder;
  */
 public interface ParkingOrderSevice {
 
+    ParkingOrder createParkingOrder(ParkingOrderDTO parkingOrderDTO);
     ParkingOrder finishParkingOrder(Integer parkingOrderId);
 }
