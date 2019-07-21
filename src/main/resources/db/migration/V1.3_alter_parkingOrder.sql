@@ -1,0 +1,1 @@
+alter table parking_order add column status varchar(255);
