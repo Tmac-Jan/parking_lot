@@ -1,0 +1,2 @@
+alter table parking_order modify column create_time timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0);
+alter table parking_order modify column update_time timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0);
