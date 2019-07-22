@@ -44,7 +44,8 @@ public class ParkingOrderController {
                if (parkingOrder!=null){
                    return (ResponseEntity) ResponseEntity.status(HttpStatus.OK);
                }else
-                   return (ResponseEntity) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+
+                   return (ResponseEntity) ResponseEntity.badRequest();
 
     }
 }

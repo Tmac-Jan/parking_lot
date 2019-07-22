@@ -21,6 +21,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.0.RELEASE'
-    compile "org.mockito:mockito-core:2.21.0"
+//    compile "org.mockito:mockito-core:2.21.0"
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
 }
